@@ -4,14 +4,19 @@
 
 }
 
-int how_many_digits(int num) {
+int how_many_digits(int number) {
+    ;; return how many digits a number is
+    ;; pay attention to edge case numbers
 
 }
 
 int power(int base, int exponent) {
+    ;; return (base^exponent)
 
 }
 
-int is_armstrong_number(int num) method_id {
+int is_armstrong_number(int number) method_id {
+    ;; if the number is an armstrong number, return -1 
+    ;; otherwise, return 0
     
 }

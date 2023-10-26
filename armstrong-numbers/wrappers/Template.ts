@@ -26,4 +26,9 @@ export class Template implements Contract {
             body: beginCell().endCell(),
         });
     }
+
+    async get_is_armstrong_number(provider: ContractProvider, number: number) {
+        const result = await provider.get('is_armstrong_number', [{ type: 'int', value: BigInt(number) }]);
+        return Number(result.stack.readBigNumber());
+    }
 }
