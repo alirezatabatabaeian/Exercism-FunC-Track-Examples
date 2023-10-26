@@ -1,0 +1,17 @@
+#include "imports/stdlib.fc";
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+
+}
+
+int how_many_digits(int num) {
+
+}
+
+int power(int base, int exponent) {
+
+}
+
+int is_armstrong_number(int num) method_id {
+    
+}
