@@ -26,4 +26,6 @@ export class Template implements Contract {
             body: beginCell().endCell(),
         });
     }
+
+    
 }

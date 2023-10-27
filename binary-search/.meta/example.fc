@@ -1,0 +1,39 @@
+#include "imports/stdlib.fc";
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+
+}
+
+int how_many_digits(int number) {
+    if(number == 0){
+        return 1;
+    }
+    int digits = 0;
+    int divisor = 1;
+    int quotient = number / divisor;
+    while(quotient != 0){
+        divisor *= 10;
+        quotient = number / divisor;
+        digits += 1;
+    }
+    return digits;
+}
+
+int power(int base, int exponent) {
+    int result = 1;
+    repeat(exponent){
+        result *= base;
+    }
+    return result;
+}
+
+int is_armstrong_number(int number) method_id {
+    int digits = number.how_many_digits();
+    int sum_of_powered = 0;
+    int q = number;
+    while(q != 0){
+        int r = q~divmod(10);
+        sum_of_powered += power(r, digits);
+    }
+    return (sum_of_powered == number);
+}

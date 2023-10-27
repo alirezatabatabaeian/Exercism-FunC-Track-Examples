@@ -3,3 +3,7 @@
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
 
 }
+
+int is_isogram(slice string) method_id {
+    
+}

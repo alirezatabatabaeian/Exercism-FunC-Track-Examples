@@ -3,3 +3,32 @@
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
 
 }
+
+;; using repeat loop
+int difference_of_squares(int number) method_id {
+    int sum = 0;
+    int sum_of_squares = 0;
+    int index = 1;
+    repeat(number){
+        sum += index;
+        sum_of_squares += (index * index);
+        index += 1;
+    }
+    int square_of_sum = sum * sum;
+    return square_of_sum - sum_of_squares;
+}
+
+
+;; pure math
+int square_of_sum(int number) method_id {
+    int sum = number * (number + 1) / 2;
+    return sum * sum;
+}
+
+int sum_of_squares(int number) method_id {
+    return number * (number + 1) * (2 * number + 1) / 6;
+}
+
+int difference_of_squares(int number) method_id {
+    return square_of_sum(number) - sum_of_squares(number);
+}
