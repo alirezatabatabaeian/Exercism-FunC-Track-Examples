@@ -1,5 +1,5 @@
 {
-    "name": "armstrong-numbers",
+    "name": "largest-series-product",
     "version": "0.0.1",
     "scripts": {
         "start": "blueprint run",

@@ -1,39 +1,27 @@
 #include "imports/stdlib.fc";
 
+(int) tlen (tuple t) asm "TLEN"; ;; you might need it (don't change it)
+
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
 
 }
 
-int how_many_digits(int number) {
-    if(number == 0){
-        return 1;
+;; search_list values must be in order
+;; if found, return index of the value in search_list, otherwise return -1
+int binary_search(tuple search_list, int value) method_id {
+    int low = 0;
+    int high = search_list.tlen() - 1;
+    while(low <= high) {
+        int middle = (low + high) / 2;
+        if(search_list.at(middle) > value){
+            high = middle - 1;
+        }
+        elseif(search_list.at(middle) < value){
+            low = middle + 1;
+        }
+        else {
+            return middle; ;; index of value
+        }
     }
-    int digits = 0;
-    int divisor = 1;
-    int quotient = number / divisor;
-    while(quotient != 0){
-        divisor *= 10;
-        quotient = number / divisor;
-        digits += 1;
-    }
-    return digits;
-}
-
-int power(int base, int exponent) {
-    int result = 1;
-    repeat(exponent){
-        result *= base;
-    }
-    return result;
-}
-
-int is_armstrong_number(int number) method_id {
-    int digits = number.how_many_digits();
-    int sum_of_powered = 0;
-    int q = number;
-    while(q != 0){
-        int r = q~divmod(10);
-        sum_of_powered += power(r, digits);
-    }
-    return (sum_of_powered == number);
+    return -1; ;; not found
 }

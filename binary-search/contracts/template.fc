@@ -1,26 +1,13 @@
 #include "imports/stdlib.fc";
 
-(int) tlen (tuple t) asm "TLEN"; ;; you might need it(Don't change it)
+(int) tlen (tuple t) asm "TLEN"; ;; you might need it (don't change it)
 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
-
+    ;; do not code in this block
 }
 
 ;; search_list values must be in order
-int binary_search(tuple search_list, int value) method_id { ;; return the value index
-    int low = 0;
-    int high = search_list.tlen() - 1;
-    while(low <= high) {
-        int middle = (low + high) / 2;
-        if(search_list.at(middle) > value){
-            high = middle - 1;
-        }
-        elseif(search_list.at(middle) < value){
-            low = middle + 1;
-        }
-        else{
-            return middle; ;; index of value
-        }
-    }
-    return -1; ;; not found
+;; if found, return index of the value from the search_list, otherwise return -1
+int binary_search(tuple search_list, int value) method_id {
+    ;; write your code here
 }

@@ -1,5 +1,67 @@
 #include "imports/stdlib.fc";
 
-() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+int error::target_cannot_be_negative() asm "101 PUSHINT";
+int error::cannot_make_target_with_given_coins() asm "102 PUSHINT";
 
+(int) tlen (tuple t) asm "TLEN";
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+;; do not code in this block
+}
+
+tuple unify_array(int size, int value) {
+    tuple t = empty_tuple();
+    repeat(size){
+        t~tpush(value);
+    }
+    return t;
+}
+
+tuple change_element(tuple t, int position, int value){
+    tuple modified_t = empty_tuple();
+    int index = 0;
+    while(index < t.tlen()){
+        if(index == position){
+            modified_t~tpush(value);
+        }
+        else{
+            modified_t~tpush(t.at(index));
+        }
+        index += 1;
+    }
+    return modified_t;
+}
+
+tuple find_fewest_coins(tuple coins, int target){
+    throw_if(error::target_cannot_be_negative(), target < 0);
+    tuple min_coins_required = unify_array(target + 1, 1000000000);
+    tuple last_coin = unify_array(target + 1, 0);
+    min_coins_required~change_element(0, 0);
+    last_coin~change_element(0, -1);
+    int change = 1;
+    while(change <= target){
+        int final_result = min_coins_required.at(change);
+        int coin_index = 0;
+        while(coin_index < coins.tlen()){
+            if(coins.at(coin_index) <= change){
+                int result = min_coins_required.at(change - coins.at(coin_index)) + 1;
+                if(result < final_result){
+                    final_result = result;
+                    last_coin~change_element(change, change - coins.at(coin_index));
+                }
+            }
+        }
+        min_coins_required~change_element(change, final_result);
+    }
+
+    throw_if(error::cannot_make_target_with_given_coins(), min_coins_required.at(target) == 1000000000);
+    
+    int last_coin_value = target;
+    tuple array = empty_tuple();
+    while(last_coin.at(last_coin_value) != -1){
+        array~tpush(last_coin_value - last_coin.at(last_coin_value));
+        last_coin_value = last_coin.at(last_coin_value);
+    }
+
+    return array;
 }

@@ -3,7 +3,7 @@
 (int) tlen (tuple t) asm "TLEN";
 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
-
+;; do not code in this block
 }
 
 tuple add_if_not_exist(tuple t, int value){

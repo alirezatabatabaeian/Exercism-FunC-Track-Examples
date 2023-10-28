@@ -1,4 +1,4 @@
-import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from 'ton-core';
+import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode, TupleItem } from 'ton-core';
 
 export type TemplateConfig = {};
 
@@ -25,5 +25,17 @@ export class Template implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    async get_flatten(provider: ContractProvider) {
+        let _tuple: TupleItem[] = [];
+        let inner_tuple: TupleItem[] = [];
+        _tuple.push({ type: 'int', value: BigInt(1) });
+        inner_tuple.push({ type: 'null' });
+        inner_tuple.push({ type: 'int', value: BigInt(2) });
+        inner_tuple.push({ type: 'null' });
+        _tuple.push({ type: 'tuple', items: inner_tuple });
+        const result = await provider.get('flatten', [{ type: 'tuple', items: _tuple }]);
+        return result.stack.readTuple();
     }
 }

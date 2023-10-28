@@ -1,5 +1,5 @@
 {
-    "name": "armstrong-numbers",
+    "name": "flatten-array",
     "version": "0.0.1",
     "scripts": {
         "start": "blueprint run",

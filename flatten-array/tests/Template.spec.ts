@@ -1,5 +1,5 @@
 import { Blockchain, SandboxContract } from '@ton-community/sandbox';
-import { Cell, toNano } from 'ton-core';
+import { Cell, TupleBuilder, TupleItem, TupleReader, toNano } from 'ton-core';
 import { Template } from '../wrappers/Template';
 import '@ton-community/test-utils';
 import { compile } from '@ton-community/blueprint';
@@ -32,7 +32,7 @@ describe('Template', () => {
     });
 
     it('should deploy', async () => {
-        // the check is done inside beforeEach
-        // blockchain and template are ready to use
+        let tuple: TupleReader = await template.get_flatten()
+        console.log(tuple.readBigNumber())
     });
 });
