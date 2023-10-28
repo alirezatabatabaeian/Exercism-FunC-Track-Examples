@@ -7,7 +7,7 @@ export function templateConfigToCell(config: TemplateConfig): Cell {
 }
 
 export class Template implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) { }
 
     static createFromAddress(address: Address) {
         return new Template(address);
@@ -25,5 +25,20 @@ export class Template implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    async get_square_of_sum(provider: ContractProvider, number: number) {
+        const result = await provider.get('square_of_sum', [{ type: 'int', value: BigInt(number) }]);
+        return Number(result.stack.readBigNumber());
+    }
+
+    async get_sum_of_squares(provider: ContractProvider, number: number) {
+        const result = await provider.get('sum_of_squares', [{ type: 'int', value: BigInt(number) }]);
+        return Number(result.stack.readBigNumber());
+    }
+
+    async get_difference_of_squares(provider: ContractProvider, number: number) {
+        const result = await provider.get('difference_of_squares', [{ type: 'int', value: BigInt(number) }]);
+        return Number(result.stack.readBigNumber());
     }
 }

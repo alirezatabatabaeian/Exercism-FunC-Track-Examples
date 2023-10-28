@@ -6,13 +6,14 @@
 
 ;; you can use pure math formula
 int square_of_sum(int number) method_id {
-    
+    int sum = number * (number + 1) / 2;
+    return sum * sum;
 }
 
 int sum_of_squares(int number) method_id {
-    
+    return number * (number + 1) * (2 * number + 1) / 6;
 }
 
 int difference_of_squares(int number) method_id {
-    
+    return square_of_sum(number) - sum_of_squares(number);
 }

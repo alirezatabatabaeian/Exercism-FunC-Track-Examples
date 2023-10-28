@@ -31,8 +31,39 @@ describe('Template', () => {
         });
     });
 
-    it('should deploy', async () => {
-        // the check is done inside beforeEach
-        // blockchain and template are ready to use
+    it('test square of sum 1', async () => {
+        expect(await template.get_square_of_sum(1)).toBe(1)
+    });
+
+    it('test square of sum 5', async () => {
+        expect(await template.get_square_of_sum(5)).toBe(225)
+    });
+
+    it('test square of sum 100', async () => {
+        expect(await template.get_square_of_sum(100)).toBe(25502500)
+    });
+
+    it('test sum of squares 1', async () => {
+        expect(await template.get_sum_of_squares(1)).toBe(1)
+    });
+
+    it('test sum of squares 5', async () => {
+        expect(await template.get_sum_of_squares(5)).toBe(55)
+    });
+
+    it('test sum of squares 100', async () => {
+        expect(await template.get_sum_of_squares(100)).toBe(338350)
+    });
+
+    it('test difference of squares 1', async () => {
+        expect(await template.get_difference_of_squares(1)).toBe(0)
+    });
+
+    it('test difference of squares 5', async () => {
+        expect(await template.get_difference_of_squares(5)).toBe(170)
+    });
+
+    it('test difference of squares 100', async () => {
+        expect(await template.get_difference_of_squares(100)).toBe(25164150)
     });
 });
