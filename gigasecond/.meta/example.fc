@@ -1,0 +1,89 @@
+#include "imports/stdlib.fc";
+
+forall X -> (tuple) to_tuple(X x) asm "NOP";
+int one_giga() asm "1000000000 PUSHINT";
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    ;; do not code in this block
+}
+
+;; you need to consider leap years and different number of days in each month 
+int is_leap_year(int year){
+    return (((year % 4 == 0) & (year % 100 != 0)) | (year % 400 == 0));
+}
+
+;; convert (year, month, day, hour, minute, second) to seconds
+int to_second(int year, int month, int day, int hour, int minute, int second) {
+    int passed_seconds = 0;
+    int year_counter = 1; ;; year
+    while(year_counter < year){
+        if (is_leap_year(year_counter)){
+            passed_seconds += 31622400;
+        }
+        else {
+            passed_seconds += 31536000;
+        }
+        year_counter += 1;
+    }
+
+    tuple days_in_month = empty_tuple();
+    if (is_leap_year(year)){
+        days_in_month = to_tuple([31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
+    }
+    else {
+        days_in_month = to_tuple([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
+    }
+    int month_counter = 1; ;; month
+    while (month_counter < month){
+        passed_seconds += days_in_month.at(month_counter - 1) * 86400;
+        month_counter += 1;
+    }
+
+    passed_seconds += (day - 1) * 86400 + hour * 3600 + minute * 60 + second; ;; day, hours, minutes, seconds
+
+    return passed_seconds;
+}
+
+;; convert seconds to (year, month, day, hour, minute, second)
+(int, int, int, int, int, int) from_second(int passed_seconds) {
+    int year = 1;
+    int month = 1;
+    int day = 1;
+    int hour = 0;
+    int minute = 0;
+    int second = 0;
+    while ((is_leap_year(year) & (passed_seconds >= 31622400)) | ((~ is_leap_year(year)) & (passed_seconds >= 31536000))){
+        if (is_leap_year(year)){
+            passed_seconds -= 31622400;
+            year += 1;
+        }
+        else {
+            passed_seconds -= 31536000;
+            year += 1;
+        }
+    }
+
+    tuple days_in_month = empty_tuple();
+    if (is_leap_year(year)){
+        days_in_month = to_tuple([31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
+    }
+    else {
+        days_in_month = to_tuple([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
+    }
+    while (passed_seconds >= (days_in_month.at(month - 1) * 86400)){
+        passed_seconds -= days_in_month.at(month - 1) * 86400;
+        month += 1;
+    }
+
+    (int q, passed_seconds) = divmod(passed_seconds, 86400);
+    day += q;
+    (hour, passed_seconds) = divmod(passed_seconds, 3600);
+    (minute, passed_seconds) = divmod(passed_seconds, 60);
+    second = passed_seconds;
+
+    return (year, month, day, hour, minute, second);
+}
+
+(int, int, int, int, int, int) giga_second(int year, int month, int day, int hour, int minute, int second) method_id {
+    return from_second(to_second(year, month, day, hour, minute, second) + one_giga());
+}

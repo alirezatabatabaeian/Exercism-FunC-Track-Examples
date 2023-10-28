@@ -7,7 +7,7 @@ export function templateConfigToCell(config: TemplateConfig): Cell {
 }
 
 export class Template implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) { }
 
     static createFromAddress(address: Address) {
         return new Template(address);
@@ -25,5 +25,24 @@ export class Template implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    async get_giga_second(provider: ContractProvider, year: number, month: number, day: number, hour: number, minute: number, second: number) {
+        const result = await provider.get('giga_second', [
+            { type: 'int', value: BigInt(year) },
+            { type: 'int', value: BigInt(month) },
+            { type: 'int', value: BigInt(day) },
+            { type: 'int', value: BigInt(hour) },
+            { type: 'int', value: BigInt(minute) },
+            { type: 'int', value: BigInt(second) },]);
+
+        return [
+            Number(result.stack.readBigNumber()),
+            Number(result.stack.readBigNumber()),
+            Number(result.stack.readBigNumber()),
+            Number(result.stack.readBigNumber()),
+            Number(result.stack.readBigNumber()),
+            Number(result.stack.readBigNumber())
+        ];
     }
 }
