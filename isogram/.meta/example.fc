@@ -1,0 +1,42 @@
+#include "imports/stdlib.fc";
+
+(int) tlen (tuple t) asm "TLEN";
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    ;; do not code in this block
+}
+
+tuple add_if_not_exist(tuple t, int value){
+    int t_length = t.tlen();
+    int index = 0;
+    int add? = -1;
+    while(index < t_length){
+        if(t.at(index) == value){
+            add? = 0;
+        }
+        index += 1;
+    }
+
+    if(add?){
+        t~tpush(value);
+    }
+    return t;
+}
+
+int is_isogram(slice string) method_id {
+    tuple pure_ascii_codes = empty_tuple(); ;; all lower case without spaces and hyphens
+    int alphabets_counter = 0; ;; remove spaces and hyphens
+    repeat(string.slice_bits() / 8){
+        int ascii_code = string~load_uint(8);
+        if((ascii_code >= 65) & (ascii_code <= 90)){ ;; remove spaces and hyphens
+            pure_ascii_codes = add_if_not_exist(pure_ascii_codes, ascii_code + 32); ;; all lower case
+            alphabets_counter += 1;
+        }
+        elseif((ascii_code >= 97) & (ascii_code <= 122)){
+            pure_ascii_codes = add_if_not_exist(pure_ascii_codes, ascii_code);
+            alphabets_counter += 1;
+        }
+    }
+
+    return (alphabets_counter == pure_ascii_codes.tlen());
+}

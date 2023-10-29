@@ -7,7 +7,7 @@ export function templateConfigToCell(config: TemplateConfig): Cell {
 }
 
 export class Template implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) { }
 
     static createFromAddress(address: Address) {
         return new Template(address);
@@ -25,5 +25,10 @@ export class Template implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    async get_is_isogram(provider: ContractProvider, input_string: string) {
+        const result = await provider.get('is_isogram', [{ type: 'slice', cell: beginCell().storeStringTail(input_string).endCell() }]);
+        return Number(result.stack.readBigNumber());
     }
 }
