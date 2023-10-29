@@ -7,7 +7,7 @@ export function templateConfigToCell(config: TemplateConfig): Cell {
 }
 
 export class Template implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) { }
 
     static createFromAddress(address: Address) {
         return new Template(address);
@@ -25,5 +25,13 @@ export class Template implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    async get_largest_series_product(provider: ContractProvider, input: string, span: number) {
+        const result = await provider.get('largest_series_product', [
+            { type: 'slice', cell: beginCell().storeStringTail(input).endCell() },
+            { type: 'int', value: BigInt(span) }]);
+
+        return Number(result.stack.readBigNumber());
     }
 }

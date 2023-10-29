@@ -1,0 +1,23 @@
+#include "imports/stdlib.fc";
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    ;; do not code in this block
+}
+
+int largest_series_product(slice input, int span) method_id {
+    int largest_product = 0;
+    while((input.slice_bits() / 8) >= span){
+        int product = 1;
+        int index = 0;
+        while(index < span){
+            int number = input.skip_bits(8 * index).preload_uint(8) - 48;
+            product *= number;
+            index += 1;
+        }
+        if(product > largest_product){
+            largest_product = product;
+        }
+        input~skip_bits(8);
+    }
+    return largest_product;
+}
