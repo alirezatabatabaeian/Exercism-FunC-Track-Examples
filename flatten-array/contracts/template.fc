@@ -5,39 +5,16 @@ forall X -> int is_tuple(X x) asm "ISTUPLE";
 forall X -> int is_null(X x) asm "ISNULL";
 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
-;; do not code in this block
+    ;; do not code in this block
 }
 
+;; optional - this function must join two tuples in one tuple
+;; but you can implement it in the flatten function 
+;; but make sure to remove this function
 tuple merge_tuple(tuple t1, tuple t2) {
-    tuple merged = empty_tuple();
-    int index = 0;
-    repeat(t1.tlen()){
-        merged~tpush(t1.at(index));
-        index += 1;
-    }
-
-    int index = 0;
-    repeat(t2.tlen()){
-        merged~tpush(t2.at(index));
-        index += 1;
-    }
-    return merged;
+    
 }
 
 tuple flatten(tuple nested_list) method_id {
-    tuple flatten_array = empty_tuple();
-    int index = 0;
-    repeat (nested_list.tlen()) {
-        var value = nested_list.at(index);
-        if (is_tuple(value)) {
-            flatten_array = merge_tuple(flatten_array, flatten(value));
-        }
-        else {
-            ifnot(is_null(value)){
-                flatten_array~tpush(value);
-            }
-        }
-        index += 1;
-    }
-    return flatten_array;
+    
 }

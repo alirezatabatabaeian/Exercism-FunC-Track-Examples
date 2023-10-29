@@ -1,4 +1,4 @@
-import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode, TupleItem } from 'ton-core';
+import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode, TupleItem, TupleReader } from 'ton-core';
 
 export type TemplateConfig = {};
 
@@ -6,8 +6,35 @@ export function templateConfigToCell(config: TemplateConfig): Cell {
     return beginCell().endCell();
 }
 
+type NestedList = (number | null | NestedList)[];
+
+function nestedListIterator(arr: NestedList): TupleItem[] {
+    let tuple: TupleItem[] = []
+    for (const element of arr) {
+        if (Array.isArray(element)) {
+            tuple.push({ type: 'tuple', items: nestedListIterator(element) })
+        } else {
+            if (element === null) {
+                tuple.push({ type: 'null' })
+            } else if (typeof element === "number") {
+                tuple.push({ type: 'int', value: BigInt(element) })
+            }
+        }
+    }
+    return tuple;
+}
+
+function tupleReaderToList(tuple: TupleReader): number[] {
+    let arr: number[] = []
+    let length: number = tuple.remaining
+    for (let i = 0; i < length; i++) {
+        arr.push(Number(tuple.readBigNumber()))
+    }
+    return arr
+}
+
 export class Template implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) { }
 
     static createFromAddress(address: Address) {
         return new Template(address);
@@ -27,15 +54,8 @@ export class Template implements Contract {
         });
     }
 
-    async get_flatten(provider: ContractProvider) {
-        let _tuple: TupleItem[] = [];
-        let inner_tuple: TupleItem[] = [];
-        _tuple.push({ type: 'int', value: BigInt(1) });
-        inner_tuple.push({ type: 'null' });
-        inner_tuple.push({ type: 'int', value: BigInt(2) });
-        inner_tuple.push({ type: 'null' });
-        _tuple.push({ type: 'tuple', items: inner_tuple });
-        const result = await provider.get('flatten', [{ type: 'tuple', items: _tuple }]);
-        return result.stack.readTuple();
+    async get_flatten(provider: ContractProvider, arr: NestedList) {
+        const result = await provider.get('flatten', [{ type: 'tuple', items: nestedListIterator(arr) }]);
+        return tupleReaderToList(result.stack.readTuple());
     }
 }
